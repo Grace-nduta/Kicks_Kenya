@@ -17,7 +17,7 @@ class User(db.Model):
 
     # Relationships
     sales = db.relationship('Sale', back_populates='user', cascade='all, delete-orphan', lazy=True)
-    favorites = db.relationship('Favorite', back_populates='user', cascade='all, delete-orphan' lazy=True)
+    favorites = db.relationship('Favorite', back_populates='user', cascade='all, delete-orphan', lazy=True)
  
 # ------------------- VENDORS --------------------
 class Vendor(db.Model):
