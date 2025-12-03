@@ -26,6 +26,8 @@ app.register_blueprint(favorites_bp)
 app.register_blueprint(auth_bp)
 
 # configurations
+app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "fallback_secret")   # Needed by Flask
+app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY", "fallback_jwt")  # Needed by JWT
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URI", "sqlite:///shoes.db")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
