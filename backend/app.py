@@ -33,7 +33,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 migrate = Migrate(app, db)
 
-app.route('/')
+@app.route('/')
 def home():
     return "Welcome to the Shoe Store API"
 
