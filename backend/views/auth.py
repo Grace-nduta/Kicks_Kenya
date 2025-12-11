@@ -7,28 +7,30 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/api')
 @auth_bp.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
+
     username = data.get('username')
+    email = data.get('email')
     password = data.get('password')
-    is_vendor = data.get('is_vendor', False)
+    role = "user"   # Fixed role for all new registrants
 
-    if not data.get('username') or not data.get('email') or not data.get('password'):
+    
+    if not username or not email or not password:
         return jsonify({"error": "Missing required fields"}), 400
-    
-    if User.query.filter_by(email=data['email']).first():
-        return jsonify({"error": "Email already registered"}), 400
-    
-    hashed_password = generate_password_hash(data['password'])
-    new_user = User(username=data['username'], 
-                        email=data['email'], 
-                        password=hashed_password, 
-                        is_vendor=is_vendor)
-    db.session.add(new_user)
-    db.session.flush()
 
-    if is_vendor:
-        new_vendor = Vendor(user_id=new_user.id, name=username)
-        db.session.add(new_vendor)
-        db.session.commit()
+    if User.query.filter_by(email=email).first():
+        return jsonify({"error": "Email already registered"}), 400
+
+    hashed_password = generate_password_hash(password)
+
+    # Create normal user
+    new_user = User(
+        username=username,
+        email=email,
+        password=hashed_password,
+        role=role
+    )
+    db.session.add(new_user)
+    db.session.commit()
 
     return jsonify({"success": "User registered successfully"}), 201
 
@@ -42,5 +44,5 @@ def login():
     if not user or not check_password_hash(user.password, data['password']):
         return jsonify({"error": "Invalid email or password"}), 401
 
-    access_token = create_access_token(identity={'id': user.id, 'is_vendor': user.is_vendor})
+    access_token = create_access_token(identity={'id': user.id, 'role': user.role})
     return jsonify({"access_token": access_token}), 200

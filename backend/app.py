@@ -2,6 +2,7 @@ from flask import Flask
 from models import db, User, Vendor, Shoe, ShoeVariant, Sale, Favorite
 from dotenv import load_dotenv
 from flask_migrate import Migrate
+from flask_jwt_extended import JWTManager
 load_dotenv()
 import os
 
@@ -32,6 +33,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URI", "sqlite:///sho
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 migrate = Migrate(app, db)
+jwt=JWTManager(app)
 
 @app.route('/')
 def home():
