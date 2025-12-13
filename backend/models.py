@@ -29,7 +29,8 @@ class Vendor(db.Model):
     
     # Relationships
     shoes = db.relationship('Shoe', backref='vendor', lazy=True)   
-
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=True, nullable=False)
+    user = db.relationship('User', backref='vendor_profile', uselist=False)
 # ------------------- SHOES --------------------
 class Shoe(db.Model):
     __tablename__ = 'shoes'
