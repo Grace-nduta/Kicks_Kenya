@@ -16,6 +16,7 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Relationships
+    vendor_profile = db.relationship('Vendor', back_populates='user', uselist=False)
     sales = db.relationship('Sale', back_populates='user', cascade='all, delete-orphan', lazy=True)
     favorites = db.relationship('Favorite', back_populates='user', cascade='all, delete-orphan', lazy=True)
  
@@ -28,9 +29,9 @@ class Vendor(db.Model):
     phone_number = db.Column(db.String(20), nullable=True)
     
     # Relationships
-    shoes = db.relationship('Shoe', backref='vendor', lazy=True)   
+    shoes = db.relationship('Shoe', back_populates='vendor', lazy=True)   
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=True, nullable=False)
-    user = db.relationship('User', backref='vendor_profile', uselist=False)
+    user = db.relationship('User', back_populates='vendor_profile', uselist=False)
 # ------------------- SHOES --------------------
 class Shoe(db.Model):
     __tablename__ = 'shoes'
@@ -42,7 +43,8 @@ class Shoe(db.Model):
     
     # Relationships
     vendor_id = db.Column(db.Integer, db.ForeignKey('vendors.id'), nullable=False)
-    variants = db.relationship('ShoeVariant', backref='shoe', lazy=True)
+    vendor = db.relationship('Vendor', back_populates='shoes')
+    variants = db.relationship('ShoeVariant', back_populates='shoe', lazy=True, cascade='all, delete-orphan')
     favorites = db.relationship('Favorite', back_populates='shoe', lazy=True)
     
 # ------------------- SHOE VARIANTS --------------------
@@ -55,6 +57,7 @@ class ShoeVariant(db.Model):
     stock = db.Column(db.Integer, nullable=False, default=0)
     
     # Relationships
+    shoe = db.relationship('Shoe', back_populates='variants', lazy=True)
     shoe_id = db.Column(db.Integer, db.ForeignKey('shoes.id'), nullable=False)
     sales = db.relationship('Sale', back_populates='shoe_variant', lazy=True)
  
