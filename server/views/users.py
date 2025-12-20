@@ -32,6 +32,28 @@ def get_shoes():
         })    
     return jsonify(result), 200
 
+@users_bp.route('/shoes/<int:shoe_id>', methods=['GET'])
+def get_single_shoe(shoe_id):
+    shoe = Shoe.query.get_or_404(shoe_id)
+
+    return jsonify({
+        'id': shoe.id,
+        'name': shoe.name,
+        'brand': shoe.brand,
+        'image_url': shoe.image_url,
+        'variants': [
+            {
+                'id': v.id,
+                'size': v.size,
+                'color': v.color,
+                'price': v.price,
+                'stock': v.stock
+            }
+            for v in shoe.variants
+        ]
+    }), 200
+
+
 
 
 
