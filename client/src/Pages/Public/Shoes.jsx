@@ -1,1 +1,0 @@
-// Uses the route /api/shoes
